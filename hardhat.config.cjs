@@ -9,10 +9,10 @@ module.exports = {
     artifacts: './src/artifacts',
   },
   networks: {
-    fuji: {
-      url: process.env.QUICKNODE_URL,
-      accounts: [`0x` + process.env.PRIVATE_KEY],
-      chainId: 43113,
+    ganache: {
+      url: process.env.PROVIDER_URL,
+      // accounts: [`0x` + process.env.PRIVATE_KEY],
+      chainId: 1337,
     },
   },
 }

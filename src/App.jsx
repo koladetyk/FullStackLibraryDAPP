@@ -4,6 +4,8 @@ import { Modal, Button, Form, Card, Image } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Library from './artifacts/contracts/Library.sol/Library.json'
+import contractInfo from './contractInfo.json';
+
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -16,22 +18,20 @@ function App() {
       copies: ''
   });
 
-
-  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS
-
+  const contractAddress = contractInfo.libraryAddress
   const ABI = Library.abi;
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const contract = new ethers.Contract(contractAddress, ABI, provider);
+  console.log(contractAddress);
 
   const fetchBooks = async () => {
-    try {
-        // Request account access 
+    try { 
         await provider.send("eth_requestAccounts", []);
 
-        const signer = provider.getSigner();  
+        const signer = provider.getSigner(); 
         const contractWithSigner = contract.connect(signer);
-        
+       
         const availableBooks = await contractWithSigner.getAvailableBooks();
 
         const booksFormatted = availableBooks.map(book => ({
