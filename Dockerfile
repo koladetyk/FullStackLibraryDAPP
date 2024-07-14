@@ -1,18 +1,26 @@
-FROM node:14
+# Use an official Node.js runtime as the base image
+FROM node:20
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy application files
+# Copy package.json and yarn.lock files
+COPY package.json yarn.lock ./
+
+# Install project dependencies
+RUN yarn install
+
+# Copy the rest of the application code
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Build the React app
+RUN yarn build
 
-# Set up Ganache with predefined accounts
-RUN npm install -g ganache
+# Install serve globally
+RUN yarn global add serve
 
-# Expose Ganache port
-EXPOSE 8545
+# Expose port 3000 for the React app
+EXPOSE 3000
 
-# Start Ganache and your application
-CMD ganache --chainId 1337 --account="0x1234...,100000000000000000000" --account="0x5678...,100000000000000000000" & npm start
+# Serve the React app
+CMD ["serve", "-s", "dist", "-l", "3000"]

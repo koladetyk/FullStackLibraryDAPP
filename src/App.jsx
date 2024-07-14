@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Library from './artifacts/contracts/Library.sol/Library.json'
 import contractInfo from './contractInfo.json';
+import ganache from 'ganache';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
   const ABI = Library.abi;
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  // const provider = new ethers.providers.Web3Provider(ganache.provider());
   const contract = new ethers.Contract(contractAddress, ABI, provider);
   console.log(contractAddress);
 
@@ -31,6 +33,7 @@ function App() {
 
         const signer = provider.getSigner(); 
         const contractWithSigner = contract.connect(signer);
+        // const contractWithSigner = contract.connect(provider);
        
         const availableBooks = await contractWithSigner.getAvailableBooks();
 
