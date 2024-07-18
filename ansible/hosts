@@ -1,0 +1,8 @@
+[master]
+64.225.40.104 ansible_user=root
+
+[frontend]
+104.248.223.219 ansible_user=root ansible_password=fullstack2
+
+[blockchain]
+206.189.79.155 ansible_user=root ansible_password=fullstack2
