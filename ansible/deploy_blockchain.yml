@@ -1,47 +1,34 @@
 ---
-- name: Deploy Blockchain and Smart Contract
-  hosts: your_target_host
-  become: yes
-
+- name: Deploy Frontend
+  hosts: frontend
   tasks:
-    - name: Install Node.js and npm
-      apt:
-        name: 
-          - nodejs
-          - npm
-        state: present
-        update_cache: yes
-
-    - name: Install Ganache CLI
-      npm:
-        name: ganache-cli
-        global: yes
-
-    - name: Install Hardhat
-      npm:
-        name: hardhat
-        global: yes
-
-    - name: Clone the repository
+    - name: Pull frontend code from GitHub
       git:
-        repo: 'https://github.com/koladetyk/FullStackLibraryDAPP'
-        dest: '/opt/library-dapp'
+        repo: 'https://github.com/koladetyk/FullStackLibraryDAPP.git'
+        dest: /var/www/frontend
+        version: frontend
 
-    - name: Install project dependencies
-      npm:
-        path: '/opt/library-dapp'
+    - name: Run Docker Container for Frontend
+      docker_container:
+        name: frontend
+        image: 0mchevli/library-dapp-frontend:latest
+        state: started
+        ports:
+          - "3000:3000"
 
-    - name: Start Ganache
-      shell: |
-        nohup ganache --chain.chainId 1337 --wallet.accounts "0x2300a471e903b7016844324ddabb15d9c7b97fb250a80a2690bca82e113ca2ae,1000000000000000000" "0xa4cde6129f625455881ecad2e609e3f232d963461f821a7e098569480456cbc5,1000000000000000000" > /var/log/ganache.log 2>&1 &
-      async: 300
-      poll: 0
+- name: Deploy Blockchain (Ganache)
+  hosts: blockchain
+  tasks:
+    - name: Pull blockchain code from GitHub
+      git:
+        repo: 'https://github.com/koladetyk/FullStackLibraryDAPP.git'
+        dest: /var/www/blockchain
+        version: blockchain
 
-    - name: Deploy smart contract
-      shell: |
-        cd /opt/library-dapp
-        npx hardhat run scripts/deploy.js --network ganache
-      register: deploy_result
-
-    - debug:
-        var: deploy_result.stdout_lines
+    - name: Run Docker Container for Ganache
+      docker_container:
+        name: ganache
+        image: trufflesuite/ganache:latest
+        state: started
+        ports:
+          - "8545:8545"
