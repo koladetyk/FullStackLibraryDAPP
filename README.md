@@ -1,1 +1,1 @@
-# Full Stack Library DAPP on Etherium Localnet
+# Full Stack Library DAPP on Ethereum Localnet with DevOps Tools (https://sites.google.com/view/ayokoladeerinlesportfolio/projects/decentralized-library-management-system-with-cloud-native-deployment)
